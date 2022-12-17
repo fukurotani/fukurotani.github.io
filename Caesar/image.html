@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/caesarPic.css">
+    <title>ceaserPics</title>
+</head>
+
+<body>
+    <main>
+        <div class="CanvasContainer">
+            <canvas id="hideCanvas"></canvas>
+            <canvas id="showCanvas" width="500" height="500"></canvas>
+        </div>
+        <input type="file" id="selectFile" accept=".png">
+        <a id="download" href="#" onclick="saveCanvas();" download="canvas.png">ダウンロード</a>
+        <div class="ChangePic">
+            <input type="button" value="GO" onclick="picNext();">
+            <input type="button" value="BACK" onclick="picBack();">
+        </div>
+    </main>
+
+    <script src="../js/caesarPic.js"></script>
+
+</body>
+
+</html>

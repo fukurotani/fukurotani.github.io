@@ -1,0 +1,16 @@
+.coin {
+    width: 500px;
+    animation: rotateIcon 5s linear infinite;
+}
+
+@keyframes rotateIcon {
+
+	0% {
+		transform: rotateY(0deg);
+	}
+
+	100% {
+		transform: rotateY(360deg);
+	}
+    
+}

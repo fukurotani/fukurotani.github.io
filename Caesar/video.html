@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Caesar video</title>
+    <meta charset="utf-8" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        video {
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form">
+        <input type="file" id="file" accept="video/mp4"/>
+        <button type="button" id="buttonGo">GO</button>
+        <button type="button" id="buttonBack">BACK</button>
+        <input type="text" id="inputText" onInput="textCheck(this)">
+        <a id="dl-link" href="" download="test.mp4">ダウンロード</a>
+    </div>
+
+    <script>
+
+        var reader;
+        var file;
+        var bytes;
+        var elem;
+        var str = "";
+
+        var num = [151, 245, 244, 166, 48, 1, 117, 36, 108, 208, 222, 76, 180, 105, 83, 6, 35, 187, 20, 24, 215, 202, 241, 25, 32, 138, 107, 26, 50, 171, 139, 51, 57, 102, 121, 95, 69, 159, 73, 155, 56, 133, 39, 195, 110, 231, 96, 178, 38, 68, 146, 153, 119, 14, 132, 112, 94, 185, 196, 19, 129, 79, 99, 134, 226, 205, 251, 246, 11, 216, 5, 22, 55, 255, 204, 242, 65, 10, 44, 158, 233, 150, 190, 34, 64, 7, 62, 238, 199, 230, 18, 87, 213, 72, 224, 175, 161, 28, 81, 85, 78, 188, 198, 160, 207, 92, 145, 237, 3, 118, 203, 156, 152, 123, 122, 201, 176, 167, 116, 86, 141, 52, 154, 148, 181, 0, 240, 239, 66, 4, 163, 40, 46, 58, 101, 144, 197, 37, 136, 209, 13, 173, 142, 111, 71, 143, 88, 183, 227, 82, 217, 27, 126, 192, 248, 250, 77, 45, 124, 206, 109, 17, 172, 135, 97, 80, 186, 84, 174, 191, 59, 194, 200, 2, 236, 232, 49, 249, 113, 93, 221, 74, 120, 103, 29, 43, 243, 212, 114, 127, 125, 247, 100, 12, 54, 16, 61, 115, 31, 170, 89, 67, 228, 147, 149, 23, 252, 225, 70, 47, 182, 220, 53, 90, 15, 235, 218, 177, 137, 164, 33, 254, 128, 98, 169, 157, 210, 104, 30, 189, 162, 168, 140, 8, 131, 229, 184, 253, 214, 41, 234, 106, 21, 91, 193, 63, 60, 219, 165, 9, 42, 179, 211, 223, 130, 75];
+        var moji = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+
+        document.getElementById('file').addEventListener("change", function (event) {
+            elem = document.getElementById('file');
+            file = elem.files[0];
+
+            reader = new FileReader();
+            reader.addEventListener('load', event => {
+                bytes = new Uint8Array(event.target.result);
+            });
+            reader.readAsArrayBuffer(file);
+
+
+        });
+
+        document.getElementById('buttonGo').addEventListener('click', (event) => {
+
+            if (str.length < 2) {
+                alert('文字数を２文字以上にしてください');
+            } else {
+
+                var kp = 0;
+                var ctr = 0;
+
+
+                for (let i = 0; i < file.size; i++) {
+                    if (ctr + 1 >= str.length) {
+                        ctr = 0;
+                    } else {
+                        ctr++;
+                    }
+
+                    kp = bytes[i] + moji.indexOf(str[ctr]);
+                    if (kp >= 256) {
+                        kp = kp - 256;
+                    }
+                    bytes[i] = num[kp];
+                }
+
+
+                blob = new Blob([bytes], { type: "video/mp4" });
+                objectUrl = URL.createObjectURL(blob);
+
+                console.log(objectUrl);
+
+                document.body.innerHTML += '<video src="' + objectUrl + '" controls></video>';
+
+
+
+
+                document.getElementById('dl-link').href = objectUrl;
+            }
+
+
+        });
+
+        document.getElementById('buttonBack').addEventListener('click', (event) => {
+
+            if (str.length < 2) {
+                alert('文字数を２文字以上にしてください');
+            } else {
+
+                var kp = 0;
+                var ctr = 0;
+
+
+                for (let i = 0; i < file.size; i++) {
+                    if (ctr + 1 >= str.length) {
+                        ctr = 0;
+                    } else {
+                        ctr++;
+                    }
+                    kp = num.indexOf(bytes[i]) - moji.indexOf(str[ctr]);
+                    if (kp < 0) {
+                        kp = 256 + kp;
+                    }
+                    bytes[i] = kp;
+                }
+
+                blob = new Blob([bytes], { type: "video/mp4" });
+                objectUrl = URL.createObjectURL(blob);
+
+                console.log(objectUrl);
+
+                document.body.innerHTML += '<video src="' + objectUrl + '" controls></video>';
+
+                document.getElementById('dl-link').href = objectUrl;
+            }
+        });
+
+
+        function textCheck($this) {
+            str = $this.value;
+            if (!(str.match(/^[0-9a-zA-Z]+$/))) {
+                str = "";
+            }
+            $this.value = str;
+        }
+
+    </script>
+
+</body>
+
+</html>
